@@ -1,0 +1,62 @@
+version: '3.8'
+services:
+  db:
+    image: mysql:5.6
+    container_name: vetdb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql123
+      MYSQL_DATABASE: db_wishes
+      MYSQL_USER: wishes
+      MYSQL_PASSWORD: WisHes@HitpL2025
+    ports:
+      - "3306:3306"
+    networks:
+      - tomcat-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 5
+      start_period: 20s
+
+
+  tomcat:
+    build:
+      context: ./Docker-file/app
+    image: javaapp
+    container_name: tomcatapp
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306
+      MYSQL_DB: db_wishes
+      MYSQL_USER: wishes
+      MYSQL_PASSWORD: WisHes@HitpL2025
+    ports:
+      - "8080:8080"
+    networks:
+      - tomcat-network
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+    depends_on:
+      - tomcat
+    networks:
+      - tomcat-network
+
+networks:
+  tomcat-network:  # Custom network for communication between Tomcat and MySQL
+    driver: bridge
+  
