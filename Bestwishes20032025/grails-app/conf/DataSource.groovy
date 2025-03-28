@@ -96,8 +96,8 @@ environments {
 			pooled = true
 			dbCreate = "update" // one of 'create', 'create-drop', 'update', 'validate', ''
 			url = "jdbc:mysql://db:3306/db_wishes?useUnicode=yes&characterEncoding=UTF-8"
-			username: "wishes"
-			password: "WisHes@HitpL2025"
+			username = "wishes"
+			password = "WisHes@HitpL2025"
 			// dbCreate = "update"
 			// url = "jdbc:h2:prodDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE"
 			properties {
